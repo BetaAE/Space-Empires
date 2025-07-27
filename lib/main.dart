@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     // To make the Game fullscreen
-    SystemChrome.setEnabledSystemUIOverlays([]);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<Game>.value(
@@ -61,7 +61,7 @@ class MyApp extends StatelessWidget{
             theme: ThemeData.dark().copyWith(
               scaffoldBackgroundColor: Colors.black,
               primaryColor: Colors.indigo,
-              accentColor: Palette.deepBlue,
+              colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Palette.deepBlue),
               textTheme: TextTheme(
                 headline4: TextStyle(fontSize: 28.sp, color: Colors.white),
                 bodyText2: TextStyle(fontSize: 12.sp, color: Colors.white),
