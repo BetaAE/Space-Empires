@@ -27,8 +27,15 @@ apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 def keystoreProperties = new Properties()
 def keystorePropertiesFile = rootProject.file('key.properties')
+def keystoreFile = null
+def hasValidKeystore = false
+
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+    if (keystoreProperties['storeFile']) {
+        keystoreFile = file(keystoreProperties['storeFile'])
+        hasValidKeystore = keystoreFile.exists()
+    }
 }
 
 android {
@@ -49,15 +56,17 @@ android {
 
     signingConfigs {
         release {
-           keyAlias keystoreProperties['keyAlias']
-           keyPassword keystoreProperties['keyPassword']
-           storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : file('key.jks')
-           storePassword keystoreProperties['storePassword']
+            if (hasValidKeystore) {
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+                storeFile keystoreFile
+                storePassword keystoreProperties['storePassword']
+            }
         }
     }
     buildTypes {
         release {
-           signingConfig signingConfigs.release
+            signingConfig hasValidKeystore ? signingConfigs.release : signingConfigs.debug
         }
     }
 }
